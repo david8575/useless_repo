@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8" />
+<title>도망가는 버튼</title>
+<style>
+  html, body { height: 100%; margin: 0; background:#0f172a; color:#e2e8f0; font-family: system-ui, sans-serif; }
+  .wrap { position: relative; width: 100%; height: 100%; overflow: hidden; }
+  #btn { position: absolute; padding: 14px 18px; border: none; border-radius: 12px; background:#22d3ee; color:#0f172a; font-weight: 700; cursor: pointer; }
+  #score { position: fixed; top: 14px; left: 14px; font-weight: 700; }
+</style>
+<div class="wrap" id="wrap">
+  <div id="score">점수: 0</div>
+  <button id="btn">잡아봐</button>
+</div>
+<script>
+  const wrap = document.getElementById('wrap');
+  const btn  = document.getElementById('btn');
+  const scoreEl = document.getElementById('score');
+  let score = 0, speed = 1;
+
+  function randomPos() {
+    const w = wrap.clientWidth - btn.offsetWidth;
+    const h = wrap.clientHeight - btn.offsetHeight;
+    const x = Math.max(0, Math.min(w, Math.random() * w));
+    const y = Math.max(0, Math.min(h, Math.random() * h));
+    btn.style.transform = `translate(${x}px, ${y}px)`;
+  }
+  randomPos();
+
+  btn.addEventListener('mouseenter', () => {
+    const w = wrap.clientWidth - btn.offsetWidth;
+    const h = wrap.clientHeight - btn.offsetHeight;
+    const dx = (Math.random() - 0.5) * 300 * speed;
+    const dy = (Math.random() - 0.5) * 300 * speed;
+    const rect = btn.getBoundingClientRect();
+    const nextX = Math.max(0, Math.min(w, rect.left + dx));
+    const nextY = Math.max(0, Math.min(h, rect.top + dy));
+    btn.style.transform = `translate(${nextX}px, ${nextY}px)`;
+  });
+
+  btn.addEventListener('click', () => {
+    score++;
+    speed = 1 + Math.min(3, score * 0.1);
+    scoreEl.textContent = `점수: ${score}`;
+    randomPos();
+    btn.textContent = ['잡아봐','오 못하네','허접','그게 최선?','zzz'][score % 5];
+  });
+
+  window.addEventListener('resize', randomPos);
+</script>
+</html>
